@@ -1,0 +1,3 @@
+- Recursive Definition of a Determinant
+- Formula for Matrix Multiplication
+- Inheritance (Inherit Square Matrix from Matrix)
