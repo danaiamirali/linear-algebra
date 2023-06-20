@@ -3,10 +3,13 @@
 
 /* Matrix.h
  * Class containing definition of a matrix
- * Maximimum size of 10 rows and 10 columns
+ * Maximimum size of 20 rows and 20 columns
 */
 
 #include <iostream>
+#include <vector>
+#include <sstream>
+#include <string>
 
 const int MAX_DIM = 20;
 
@@ -26,6 +29,11 @@ class Matrix {
 
     int m, n;
     int **matrix = nullptr;
+
+        // Converts 1D Index to 2D Index
+        std::pair<int, int> index(int i) const {
+            return std::pair<int, int> (i / n, i % n);
+        }
 
     public:
         // Constructor with specified dimensions
@@ -65,6 +73,33 @@ class Matrix {
             return this;
         }
 
+        // Fills matrix with integers from string
+        // Integers must be separated by spaces
+        Matrix *load(std::string nums) {
+            std::vector<int> numbers;
+            std::stringstream ss(nums);
+            std::string token;
+
+            while (ss >> token) {
+                try {
+                    int num = std::stoi(token);
+                    numbers.push_back(num);
+                } catch (const std::exception& e) {
+
+                }
+
+            return this;
+    }
+
+    int numbersCount = numbers.size();
+    for (int i = 0; i < m * n && i < numbersCount; i++) {
+        std::pair<int, int> ind = index(i);
+        matrix[ind.first][ind.second] = numbers[i];
+    }
+
+    return this;
+        }
+
         int* operator[](int i) const {
             return matrix[i];
         }
@@ -81,6 +116,14 @@ class Matrix {
             return os;
         }
 
+class SquareMatrix : public Matrix {
+    public:
+        SquareMatrix(int n) : Matrix(n, n) {}
+
+        // Calculates determinant of matrix
+        int determinant() {
+            if ()
+        }
 };
 
 #endif // Matrix
