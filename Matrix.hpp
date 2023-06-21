@@ -32,6 +32,11 @@ class Matrix {
     int **matrix = nullptr;
 
     public:
+
+        // Default constructor
+        Matrix() : m(0), n(0) {}
+
+
         // Constructor with specified dimensions
         // Dynamically allocates memory for matrix
         // Throws DIM_ERROR if dimensions are invalid
@@ -48,22 +53,27 @@ class Matrix {
             }
         }
 
-        // Default constructor
-        Matrix() : m(0), n(0) {}
-
+        
         // Copy constructor
         // Deep Copy
         Matrix(const Matrix& matrix) {
             copyAll(matrix);
         }
 
+
         ~Matrix() {
             deleteMatrix();
         }
 
+
+        /*
+         * Public class functions
+        */
+
         std::pair<int, int> getDimensions() const {
             return std::pair<int, int> (m, n);
         }
+
 
         // Fills matrix with random integers from 0 to 9
         Matrix *load() {
@@ -75,6 +85,7 @@ class Matrix {
 
             return this;
         }
+
 
         // Fills matrix with integers from string
         // Integers must be separated by spaces
@@ -101,12 +112,17 @@ class Matrix {
             }
 
             return this;
-    }
+        }
 
+
+        // Overloaded bracket operator
+        // Returns pointer to row
         int* operator[](int i) const {
             return matrix[i];
         }
         
+
+        // Overloaded extraction operator  
         friend std::ostream& operator<<(std::ostream &os, const Matrix& matrix) {
             for (int i = 0; i < matrix.m; i++) {
                 os << "| ";
@@ -118,6 +134,7 @@ class Matrix {
 
             return os;
         }
+
 
         // Overloaded assignment operator
         // Deep Copy
@@ -131,6 +148,7 @@ class Matrix {
             copyAll(matrix);
         }
 
+
         // Returns reduced echelon form of matrix
         // Does not modify original matrix
         Matrix ref() {
@@ -139,6 +157,7 @@ class Matrix {
             // Recursively reduce function to echelon form
             return *reduce(&ref);
         }
+
 
         Matrix *reduce(Matrix *ref) {
             // Base Case: Matrix has 1 row
@@ -188,6 +207,7 @@ class Matrix {
             // Return
         }
 
+
     private:
         /*
          * Helper class functions
@@ -198,6 +218,7 @@ class Matrix {
             return std::pair<int, int> (i / n, i % n);
         }
 
+
         int* getCol(int col) const {
             int *column;
             for (int i = 0; i < m; i++) {
@@ -207,9 +228,11 @@ class Matrix {
             return column;
         }
 
+
         int* getRow(int row) const {
             return matrix[row];
         }
+
 
         bool isZeroCol(int col) const {
             int *c = getCol(col);
@@ -222,6 +245,7 @@ class Matrix {
             return true;
         }
 
+
         Matrix *swapRows(int row1, int row2) {
             int *temp = matrix[row1];
             matrix[row1] = matrix[row2];
@@ -229,6 +253,7 @@ class Matrix {
 
             return this;
         }
+
 
         // Returns new matrix with column x removed
         Matrix popCol(int x) {
@@ -250,6 +275,7 @@ class Matrix {
             return newMatrix;
         }
 
+
         // Returns pointer to same matrix with first column cropped
         Matrix *cropFirstCol() {
             for (int i = 0; i < m; i++) {
@@ -257,6 +283,7 @@ class Matrix {
             }
             n--;
         }
+
 
         Matrix *copyAll(const Matrix &matrix) {
             this->m = matrix.m;
@@ -270,6 +297,7 @@ class Matrix {
             return this;
         }        
 
+
         void deleteMatrix() {
                 for (int i = 0; i < m; i++) {
                     delete[] matrix[i];
@@ -282,7 +310,10 @@ class Matrix {
 
 class SquareMatrix : public Matrix {
     public:
+
+
         SquareMatrix(int n) : Matrix(n, n) {}
+
 
         SquareMatrix(Matrix m) {
             std::pair<int, int> dim = m.getDimensions();
@@ -295,10 +326,13 @@ class SquareMatrix : public Matrix {
             this->matrix = m.matrix;
         }
 
+
         // Calculates determinant of matrix
         // Intelligently chooses between cofactor expansion and row reduction
         int determinant() {
-            
+            /*
+            TO-DO
+            */
         }
 };
 
