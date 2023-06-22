@@ -19,14 +19,14 @@ const int MAX_DIM = 20;
 class DIM_ERROR {
     public:
         DIM_ERROR() {
-            std::cout << "Error: Invalid dimensions" << std::endl;
+            cout << "Error: Invalid dimensions" << endl;
         }
 };
 
 class MULTIPLY_ERROR {
     public:
         MULTIPLY_ERROR() {
-            std::cout << "Error: Cannot multiply matrices" << std::endl;
+            cout << "Error: Cannot multiply matrices" << endl;
         }
 };
 
@@ -167,7 +167,7 @@ class Matrix {
                 for (int j = 0; j < matrix.n; j++) {
                     os << matrix[i][j] << " ";
                 }
-                os << "|" << std::endl;
+                os << "|" << endl;
             }
 
             return os;
