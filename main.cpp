@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Matrix.hpp"
+#include "IdentityMatrix.hpp"
 
 using namespace std;
 

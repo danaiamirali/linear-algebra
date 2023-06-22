@@ -180,51 +180,13 @@ class Matrix {
          * ========================
         */
 
-       // Multiplies two matrices
-       // Returns new matrix
-       Matrix operator*(const Matrix &other) const {
-            if (this->n != other.m) {
-                throw MULTIPLY_ERROR();
-            }
+        // Multiplies two matrices
+        // Returns new matrix
+        Matrix operator*(const Matrix &other) const;
 
-            Matrix newMatrix = Matrix(this->m, other.n);
+        // Scalar multiplication
+        Matrix operator*(const int c) const;
 
-            for (int i = 0; i < newMatrix.m; i++) {
-                for (int j = 0; j < newMatrix.n; j++) {
-                    int sum = 0;
-                    for (int k = 0; k < this->n; k++) {
-                        sum += this->matrix[i][k] * other.matrix[k][j];
-                    }
-                    newMatrix.matrix[i][j] = sum;
-                }
-            }
-
-            return newMatrix;
-       }
-
-       // Scalar multiplication
-       Matrix operator*(const int c) const {
-            Matrix newMatrix = Matrix(this->m, this->n);
-
-            for (int i = 0; i < newMatrix.m; i++) {
-                for (int j = 0; j < newMatrix.n; j++) {
-                        newMatrix.matrix[i][j] = this->matrix[i][j] * c;
-                }
-            }
-
-            return newMatrix;
-       }
-
-
-        // Reduced Echelon Form
-        // Returns a new matrix
-
-        // Is top left corner 0?
-            //   - If yes, look down until non-zero and this->swapRow()
-            //      - If no non-zero found, move right and repeat
-            //  - If no, perform scalar multiplication to make it 1
-            //  - Perform row operations to make rest of column 0
-            //  - Crop first row and first col and repeat
         
 
     private:
@@ -258,6 +220,10 @@ class Matrix {
 
 
         Matrix *swapRows(int row1, int row2) {
+            if (row1 == row2) {
+                return this;
+            }
+
             int *temp = matrix[row1];
             matrix[row1] = matrix[row2];
             matrix[row2] = temp;
@@ -321,76 +287,6 @@ class Matrix {
 
 };
 
-class SquareMatrix : public Matrix {
 
-    public:
-
-        
-        /*
-         * ========================
-         *       CONSTRUCTORS
-         * ========================
-        */
-
-        // Initialize from dimensions
-        SquareMatrix(int n) : Matrix(n, n) {}
-
-
-        // Initialize from Matrix
-        SquareMatrix(Matrix mat) : Matrix(mat.m, mat.m) {
-
-            std::pair<int, int> dim = mat.getDimensions();
-            if (dim.first != dim.second) {
-                throw DIM_ERROR();
-            }
-
-        }
-
-
-        // Calculates determinant of matrix
-        // Intelligently chooses between cofactor expansion and row reduction
-        int determinant() {
-            /*
-            TO-DO
-            */
-
-           return 0;
-        }
-};
-
-class IdentityMatrix : public SquareMatrix {
-
-    public:
-
-        /*
-         * ========================
-         *       CONSTRUCTORS
-         * ========================
-        */
-
-        // Initialize from dimensions
-        IdentityMatrix(int n) : SquareMatrix(n) {
-            for (int i = 0; i < n; i++) {
-                matrix[i][i] = 1;
-            }
-        }
-
-        // Initialize from Matrix
-        IdentityMatrix(Matrix mat) : SquareMatrix(mat) {
-            std::pair<int, int> dim = mat.getDimensions();
-            if (dim.first != dim.second) {
-                throw DIM_ERROR();
-            }
-
-            for (int i = 0; i < dim.first; i++) {
-                matrix[i][i] = 1;
-            }
-        }
-
-        int determinant() {
-            return 1;
-        }
-
-};
 
 #endif // Matrix
