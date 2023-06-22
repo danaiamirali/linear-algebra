@@ -23,6 +23,13 @@ class DIM_ERROR {
         }
 };
 
+class MULTIPLY_ERROR {
+    public:
+        MULTIPLY_ERROR() {
+            std::cout << "Error: Cannot multiply matrices" << std::endl;
+        }
+};
+
 class Matrix {
     /*
     INVARIANTS:
@@ -30,6 +37,7 @@ class Matrix {
     m and n must be less than MAX_DIM
     m and n cannot be changed after initialization
     */
+    protected:
     friend class SquareMatrix;
 
     // Immutable dimensions
@@ -138,6 +146,13 @@ class Matrix {
         }
 
 
+        /*
+         * ========================
+         *         OPERATORS
+         * ========================
+        */
+
+
         // Overloaded bracket operator
         // Returns pointer to row
         int* operator[](int i) const {
@@ -159,78 +174,58 @@ class Matrix {
         }
 
 
-        // Returns reduced echelon form of matrix
-        // Does not modify original matrix
-        Matrix ref() {
-            Matrix ref = *this;
+        /*
+         * ========================
+         *     UTILITY METHODS
+         * ========================
+        */
 
-            // Recursively reduce function to echelon form
-            return *reduce(&ref);
-        }
-
-
-        Matrix *reduce(Matrix *ref) {
-            // Base Case: Matrix has 1 row
-            if (ref->m == 1) {
-                cout << "Base case" << endl;
-                return ref;
+       // Multiplies two matrices
+       // Returns new matrix
+       Matrix operator*(const Matrix &other) const {
+            if (this->n != other.m) {
+                throw MULTIPLY_ERROR();
             }
-            // Else: Matrix has more than 1 row
-            else {
-                cout << "Recursive case" << endl;
-                // If first column is all 0s
-                if (ref->isZeroCol(0)) {
-                    // Skip col and reduce submatrix, then return
-                    Matrix mat = ref->cropFirstColRow();
-                    return mat.reduce(&mat);
-                }
-                // If first column has nonzero
-                else {
-                    // Find first 
-                    cout << "First col has nonzero" << endl;
-                    int *firstCol = ref->getCol(0);
-                    for (int i = 0; i < m; i++) {
-                        if (firstCol[i] != 0) {
-                            // If first nonzero is not in first row, swap
-                            if (i != 0) {
-                                cout << "Swapping rows" << endl;
-                                ref->swapRows(0, i);
-                            }
-                            break;
-                        }
+
+            Matrix newMatrix = Matrix(this->m, other.n);
+
+            for (int i = 0; i < newMatrix.m; i++) {
+                for (int j = 0; j < newMatrix.n; j++) {
+                    int sum = 0;
+                    for (int k = 0; k < this->n; k++) {
+                        sum += this->matrix[i][k] * other.matrix[k][j];
                     }
-                    delete[] firstCol;
-                    // Create zeros in all other rows in first column
-                    cout << "Creating zeros" << endl;
-                    for (int i = 1; i < m; i++) {
-                        
-                        int *row = ref->getRow(i);
-                        if (row[0] == 0) {
-                            continue;
-                        }
-
-                        cout << "Pointer arithmetic" << endl;
-                        // R = R + (-a/b)R1
-                        for (int *ptr1 = row, *ptr2 = ref->getRow(0); 
-                        ptr1 < row + n; ptr1++, ptr2++) {
-                            *ptr1 = *ptr1 + (-row[0] / ref->getRow(0)[0]) * *ptr2;
-                        }
-
-                    }
-
-                    Matrix mat = ref->cropFirstColRow();
-                    return mat.reduce(&mat);
+                    newMatrix.matrix[i][j] = sum;
                 }
-
-                return ref;
             }
-            // If first column has nonzero
-                // Pick first nonzero, if isn't first row, swap with 1st
-                // Create zeros in all other rows in first column
-            // Reduce submatrix
-            // Return
-        }
 
+            return newMatrix;
+       }
+
+       // Scalar multiplication
+       Matrix operator*(const int c) const {
+            Matrix newMatrix = Matrix(this->m, this->n);
+
+            for (int i = 0; i < newMatrix.m; i++) {
+                for (int j = 0; j < newMatrix.n; j++) {
+                        newMatrix.matrix[i][j] = this->matrix[i][j] * c;
+                }
+            }
+
+            return newMatrix;
+       }
+
+
+        // Reduced Echelon Form
+        // Returns a new matrix
+
+        // Is top left corner 0?
+            //   - If yes, look down until non-zero and this->swapRow()
+            //      - If no non-zero found, move right and repeat
+            //  - If no, perform scalar multiplication to make it 1
+            //  - Perform row operations to make rest of column 0
+            //  - Crop first row and first col and repeat
+        
 
     private:
         /*
@@ -239,37 +234,26 @@ class Matrix {
          * ========================
         */ 
 
+       void resetCursor() const {
+           int** temp = const_cast<int**>(root);
+           *matrix = *temp;
+       }
+
+        Matrix *shiftCursor(int row, int col) {
+            *matrix = matrix[row];
+            *matrix = *matrix + col;
+
+            return this;
+        }
+
         // Converts 1D Index to 2D Index
         std::pair<int, int> index(int i) const {
             return std::pair<int, int> (i / n, i % n);
         }
 
 
-        int* getCol(int col) const {
-
-            int *column = new int[m];
-            for (int i = 0; i < m; i++) {
-                column[i] = matrix[i][col];
-            }
-
-            return column;
-        }
-
-
         int* getRow(int row) const {
             return matrix[row];
-        }
-
-
-        bool isZeroCol(int col) const {
-            int *c = getCol(col);
-            for (int i = 0; i < n; i++) {
-                if (c[i] != 0) {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
 
@@ -372,6 +356,41 @@ class SquareMatrix : public Matrix {
 
            return 0;
         }
+};
+
+class IdentityMatrix : public SquareMatrix {
+
+    public:
+
+        /*
+         * ========================
+         *       CONSTRUCTORS
+         * ========================
+        */
+
+        // Initialize from dimensions
+        IdentityMatrix(int n) : SquareMatrix(n) {
+            for (int i = 0; i < n; i++) {
+                matrix[i][i] = 1;
+            }
+        }
+
+        // Initialize from Matrix
+        IdentityMatrix(Matrix mat) : SquareMatrix(mat) {
+            std::pair<int, int> dim = mat.getDimensions();
+            if (dim.first != dim.second) {
+                throw DIM_ERROR();
+            }
+
+            for (int i = 0; i < dim.first; i++) {
+                matrix[i][i] = 1;
+            }
+        }
+
+        int determinant() {
+            return 1;
+        }
+
 };
 
 #endif // Matrix
