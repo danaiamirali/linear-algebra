@@ -176,7 +176,7 @@ class Matrix {
 
         /*
          * ========================
-         *     UTILITY METHODS
+         *     MATRIX OPERATIONS
          * ========================
         */
 
