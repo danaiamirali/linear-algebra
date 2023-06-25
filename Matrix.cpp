@@ -10,7 +10,7 @@ Matrix Matrix::operator*(const Matrix &other) const {
 
     for (int i = 0; i < newMatrix.m; i++) {
         for (int j = 0; j < newMatrix.n; j++) {
-            int sum = 0;
+            Fraction sum = 0;
             for (int k = 0; k < this->n; k++) {
                 sum += this->matrix[i][k] * other.matrix[k][j];
             }

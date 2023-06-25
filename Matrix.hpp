@@ -43,7 +43,7 @@ class Matrix {
 
     // Immutable dimensions
     const int m, n;
-    int **const matrix; // Immutable pointer - root of matrix
+    Fraction **const matrix; // Immutable pointer - root of matrix
     
 
     public:
@@ -57,21 +57,21 @@ class Matrix {
 
         // Default constructor
         // Creates 2x2 matrix
-        Matrix() : m(2), n(2), matrix(new int*[m]) {}
+        Matrix() : m(2), n(2), matrix(new Fraction*[m]) {}
 
 
         // Constructor with specified dimensions
         // Dynamically allocates memory for matrix
         // Throws DIM_ERROR if dimensions are invalid
         Matrix(int m_in, int n_in):
-        m (m_in), n(n_in), matrix(new int*[m]) {
+        m (m_in), n(n_in), matrix(new Fraction*[m]) {
 
             if (m <= 0 || n <= 0 || m > MAX_DIM || n > MAX_DIM) {
                 throw DIM_ERROR();
             }
 
             for (int i = 0; i < m; i++) {
-                matrix[i] = new int[n];
+                matrix[i] = new Fraction[n];
             }
 
             cout << m << " x " << n << " matrix initialized." << endl;
@@ -82,7 +82,7 @@ class Matrix {
         // Copy constructor
         // Deep Copy
         Matrix(const Matrix& matrix) 
-        : m(matrix.m), n(matrix.n), matrix(new int*[m]) {
+        : m(matrix.m), n(matrix.n), matrix(new Fraction*[m]) {
             copyAll(matrix);
         }
 
@@ -108,7 +108,7 @@ class Matrix {
         Matrix *load() {
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
-                    matrix[i][j] = rand() % 10;
+                    matrix[i][j] = Fraction(rand() % 10);
                 }
             }
 
@@ -156,7 +156,7 @@ class Matrix {
 
         // Overloaded bracket operator
         // Returns pointer to row
-        int* operator[](int i) const {
+        Fraction* operator[](int i) const {
             return matrix[i];
         }
         
@@ -217,14 +217,14 @@ class Matrix {
         }
 
 
-        int* getRow(int row) const {
+        Fraction* getRow(int row) const {
             return matrix[row];
         }
 
         // Performs deep copy from argument matrix to this matrix
         Matrix *copyAll(const Matrix &matrix) {
             for (int i = 0; i < m; i++) {
-                this->matrix[i] = new int[n];
+                this->matrix[i] = new Fraction[n];
                 for (int j = 0; j < n; j++) {
                     this->matrix[i][j] = matrix[i][j];
                 }

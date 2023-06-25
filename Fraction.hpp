@@ -71,11 +71,53 @@ class Fraction {
         f1.denominator * f2.denominator);
     }
 
+    friend Fraction operator+(const Fraction& f1, int i) {
+        return f1 + Fraction(i);
+    }
+
+    friend Fraction operator+=(Fraction& f1, const Fraction& f2) {
+        f1 = f1 + f2;
+        return f1;
+    }
+
+    friend Fraction operator+=(Fraction& f1, int i) {
+        f1 = f1 + i;
+        return f1;
+    }
+
     // Overloaded subtraction operator
     friend Fraction operator-(const Fraction& f1, const Fraction& f2) {
         return Fraction(f1.numerator * f2.denominator - f2.numerator * f1.denominator, 
         f1.denominator * f2.denominator);
     }
+
+    // Overloaded equals operator
+    friend bool operator==(const Fraction& f1, const Fraction& f2) {
+        return f1.numerator == f2.numerator && f1.denominator == f2.denominator;
+    }
+
+    friend bool operator==(const Fraction& f1, int i) {
+        return f1 == Fraction(i);
+    }
+
+    // Overloaded not equals operator
+    friend bool operator!=(const Fraction& f1, const Fraction& f2) {
+        return !(f1 == f2);
+    }
+
+    friend bool operator!=(const Fraction& f1, int i) {
+        return !(f1 == i);
+    }
+
+    // Overloaded less than operator
+    friend bool operator<(const Fraction& f1, const Fraction& f2) {
+        return f1.numerator * f2.denominator < f2.numerator * f1.denominator;
+    }
+
+    friend bool operator>= (const Fraction& f1, const Fraction& f2) {
+        return !(f1 < f2);
+    }
+
     
     /*
      * ========================
