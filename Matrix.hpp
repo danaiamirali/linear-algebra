@@ -11,6 +11,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include "Fraction.hpp"
 
 using std::cout, std::endl;
 
@@ -42,8 +43,9 @@ class Matrix {
 
     // Immutable dimensions
     const int m, n;
+    int **const root; // Immutable pointer - root of matrix
     int **matrix = nullptr; // Mutable pointer - cursor
-    int ** const root; // Immutable pointer - root of matrix
+    
 
     public:
 
@@ -56,14 +58,14 @@ class Matrix {
 
         // Default constructor
         // Creates 2x2 matrix
-        Matrix() : m(2), n(2), matrix(new int*[m]), root(matrix) {}
+        Matrix() : m(2), n(2), root(new int*[m]), matrix(root) {}
 
 
         // Constructor with specified dimensions
         // Dynamically allocates memory for matrix
         // Throws DIM_ERROR if dimensions are invalid
         Matrix(int m_in, int n_in):
-        m (m_in), n(n_in), matrix(new int*[m]), root(matrix) {
+        m (m_in), n(n_in), root(new int*[m]), matrix(root) {
 
             if (m <= 0 || n <= 0 || m > MAX_DIM || n > MAX_DIM) {
                 throw DIM_ERROR();
@@ -81,7 +83,7 @@ class Matrix {
         // Copy constructor
         // Deep Copy
         Matrix(const Matrix& matrix) 
-        : m(matrix.m), n(matrix.n), matrix(new int*[m]), root(matrix.root){
+        : m(matrix.m), n(matrix.n), root(new int*[m]), matrix(root) {
             copyAll(matrix);
         }
 
@@ -185,8 +187,12 @@ class Matrix {
         Matrix operator*(const Matrix &other) const;
 
         // Scalar multiplication
-        Matrix operator*(const int c) const;
+        Matrix operator*(int c) const;
 
+        // Matrix reduced echelon form
+        // Returns new matrix
+        Matrix ref() const;
+        void refHelper(int m, int n);
         
 
     private:
@@ -196,14 +202,37 @@ class Matrix {
          * ========================
         */ 
 
+       bool isZeroCol(int col) const {
+            for (int i = 0; i < m; i++) {
+                if (matrix[i][col] != 0) {
+                        return false;
+                }
+            }
+
+            return true;
+       }
+
+
        void resetCursor() const {
            int** temp = const_cast<int**>(root);
            *matrix = *temp;
        }
 
         Matrix *shiftCursor(int row, int col) {
-            *matrix = matrix[row];
-            *matrix = *matrix + col;
+            cout << "Cursor shifted from " << matrix[0][0];
+            
+            // Shift matrix pointer row number of rows and col number of columns
+            int** submatrix = matrix[row];
+            cout << *submatrix << endl;
+            submatrix[0] = matrix[row] + col;
+            cout << **submatrix;
+
+            matrix = submatrix;
+
+            cout << " to " << matrix[0][0] << endl;
+
+            cout << "Matrix following shift: " << endl;
+            cout << *this << endl;
 
             return this;
         }
@@ -219,16 +248,25 @@ class Matrix {
         }
 
 
-        Matrix *swapRows(int row1, int row2) {
+        void *swapRows(int row1, int row2) {
             if (row1 == row2) {
                 return this;
             }
 
+            int *temp = root[row1];
+            root[row1] = root[row2];
+            root[row2] = temp;
+        }
+
+        void *swapRowsFromCursor(int row1, int row2) {
+            if (row1 == row2) {
+                return this;
+            }
+
+            cout << "Swapping rows " << row1 << " and " << row2 << endl;
             int *temp = matrix[row1];
             matrix[row1] = matrix[row2];
             matrix[row2] = temp;
-
-            return this;
         }
 
 
@@ -264,6 +302,18 @@ class Matrix {
             return newMatrix;
         }
 
+        void subtractRowFromCursor(int row, int subtractor, int cols) {
+            for (int i = 0; i < cols; i++) {
+                matrix[row][i] -= subtractor * matrix[0][i];
+            }
+        }
+
+        void divideRowFromCursor(int row, int divisor) {
+            for (int i = 0; i < n; i++) {
+                matrix[row][i] /= divisor;
+            }
+        }
+
         // Performs deep copy from argument matrix to this matrix
         Matrix *copyAll(const Matrix &matrix) {
             for (int i = 0; i < m; i++) {
@@ -279,10 +329,10 @@ class Matrix {
 
         void deleteMatrix() {
                 for (int i = 0; i < m; i++) {
-                    delete[] matrix[i];
+                    delete[] root[i];
                 }
-                delete[] matrix;
-            }
+                delete[] root;
+        }
 
 
 };
