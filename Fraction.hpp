@@ -1,5 +1,7 @@
 #include <sstream>
 
+using std::cout, std::endl, std::string, std::stringstream;
+
 class ZERO_DENOMINATOR {
     public:
         ZERO_DENOMINATOR() {
@@ -14,30 +16,34 @@ class Fraction {
 
     public:
 
+
+    /*
+     * ========================
+     *       CONSTRUCTORS
+     * ========================
+    */
     Fraction(int numerator, int denominator) {
 
         if (denominator == 0) {
             throw ZERO_DENOMINATOR();
         }
 
-        // Reduce fraction
-        int gcd = 1;
-        for (int i = 1; i <= numerator && i <= denominator; i++) {
-            if (numerator % i == 0 && denominator % i == 0) {
-                gcd = i;
-            }
-        }
-
-        numerator /= gcd;
-        denominator /= gcd;
-
         this->numerator = numerator;
         this->denominator = denominator;
+
+        reduce();
     }
 
-    bool isWhole() const {
-        return denominator == 1;
-    }
+    Fraction(int numerator) : Fraction(numerator, 1) {}
+
+    Fraction() : Fraction(0, 1) {}
+
+
+    /*
+     * ========================
+     *        OPERATORS
+     * ========================
+    */
 
     // Overloaded extraction operator
     friend std::ostream& operator<<(std::ostream& os, const Fraction& f) {
@@ -47,5 +53,57 @@ class Fraction {
             os << f.numerator << "/" << f.denominator;
         }
         return os;
+    }
+
+    // Overloaded division operator
+    friend Fraction operator/(const Fraction& f1, const Fraction& f2) {
+        return Fraction(f1.numerator * f2.denominator, f1.denominator * f2.numerator);
+    }
+
+    // Overloaded multiplication operator
+    friend Fraction operator*(const Fraction& f1, const Fraction& f2) {
+        return Fraction(f1.numerator * f2.numerator, f1.denominator * f2.denominator);
+    }
+
+    // Overloaded addition operator
+    friend Fraction operator+(const Fraction& f1, const Fraction& f2) {
+        return Fraction(f1.numerator * f2.denominator + f2.numerator * f1.denominator, 
+        f1.denominator * f2.denominator);
+    }
+
+    // Overloaded subtraction operator
+    friend Fraction operator-(const Fraction& f1, const Fraction& f2) {
+        return Fraction(f1.numerator * f2.denominator - f2.numerator * f1.denominator, 
+        f1.denominator * f2.denominator);
+    }
+    
+    /*
+     * ========================
+     *     FRACTION HELPERS
+     * ======================== 
+    */
+
+    // Reduces fraction to lowest terms
+    void reduce() {
+        int gcd = getGCD(numerator, denominator);
+        numerator /= gcd;
+        denominator /= gcd;
+    }
+
+    // Returns greatest common divisor of two numbers
+    int getGCD(int a, int b) {
+        int gcd = 1;
+        for (int i = 1; i <= numerator && i <= denominator; i++) {
+            if (numerator % i == 0 && denominator % i == 0) {
+                gcd = i;
+            }
+        }
+
+        return gcd;
+    }
+
+    // Returns true if fraction is a whole number
+    bool isWhole() const {
+        return denominator == 1;
     }
 };
