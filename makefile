@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -std=c++11
 
 SRCS = main.cpp Matrix.cpp
 OBJS = $(SRCS:.cpp=.o)
-EXEC = matrix_program.exe
+EXEC = matrix_program
 
 .PHONY: all clean
 
@@ -17,3 +17,8 @@ $(EXEC): $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(EXEC)
+
+.PHONY: clean_objs
+
+clean_objs:
+	rm -f $(OBJS)
