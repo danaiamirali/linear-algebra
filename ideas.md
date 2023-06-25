@@ -1,4 +1,4 @@
 - Recursive Definition of a Determinant
     - Apply rref -> determinant if size is high enough to optimize runtime (n! recursion)
-- Formula for Matrix Multiplication
-- Inheritance (Inherit Square Matrix from Matrix)
+- Redo constructors and load interface to do both in one go
+- Load string with commas separating rows (infer dimensions)

@@ -1,16 +1,15 @@
 #include <iostream>
 #include "Matrix.hpp"
+#include "IdentityMatrix.hpp"
 
 using namespace std;
 
 int main(void) {
-    Matrix m1(3,4);
-    Matrix m2(3,3);
+    Matrix m1(3,3);
 
-    IdentityMatrix im(4);
+    IdentityMatrix im(3);
 
-    m1.load("1 2 3 6 2 -3 2 14 3 1 -1 -2");
-    m2.load();
+    m1.load("2 5 3 2 10 6 4 5 0");
 
     cout << "m1:" << endl;
     cout << m1 << endl;
@@ -21,4 +20,7 @@ int main(void) {
 
     cout << "m1 x identity:" << endl;
     cout << m1 * im << endl;
+
+    cout << "m1 reduced:" << endl;
+    cout << m1.ref() << endl;
 }
