@@ -39,12 +39,12 @@ class Matrix {
     m and n cannot be changed after initialization
     */
     protected:
-    friend class SquareMatrix;
 
-    // Immutable dimensions
-    const int m, n;
-    Fraction **const matrix; // Immutable pointer - root of matrix
-    
+        friend class SquareMatrix;
+        
+        const int m, n; // Immutable dimensions
+        Fraction **const matrix; // Immutable pointer - root of matrix
+        
 
     public:
 
@@ -178,6 +178,7 @@ class Matrix {
         /*
          * ========================
          *     MATRIX OPERATIONS
+         *        Matrix.cpp
          * ========================
         */
 
@@ -188,11 +189,16 @@ class Matrix {
         // Scalar multiplication
         Matrix operator*(int c) const;
 
-        // Matrix reduced echelon form
+        // Row equivalency
+        bool operator==(const Matrix &other) const;
+
+        // Matrix reduced row echelon form
         // Returns new matrix
-        Matrix ref() const;
-        void refHelper(int m, int n);
-        
+        Matrix rref();
+
+        // Matrix row echelon form
+        // Returns new matrix
+        Matrix ref();
 
     private:
         /*
@@ -201,6 +207,17 @@ class Matrix {
          * ========================
         */ 
 
+        // Helper for ref()
+        void refHelper(Matrix &mat, int currentRow, int currentCol);
+        
+        // Swaps two rows
+        void swapRows(int row1, int row2) {
+            Fraction *temp = matrix[row1];
+            matrix[row1] = matrix[row2];
+            matrix[row2] = temp;
+        }
+
+        // Returns true if col is all zeros
        bool isZeroCol(int col) const {
             for (int i = 0; i < m; i++) {
                 if (matrix[i][col] != 0) {

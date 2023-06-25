@@ -46,8 +46,10 @@ class Fraction {
     */
 
     // Overloaded extraction operator
-    friend std::ostream& operator<<(std::ostream& os, const Fraction& f) {
-        if (f.isWhole()) {
+    friend std::ostream& operator<<(std::ostream& os, Fraction& f) {
+        f.reduce();
+
+        if (f.isWhole() || f.numerator == 0) {
             os << f.numerator;
         } else {
             os << f.numerator << "/" << f.denominator;
@@ -58,6 +60,11 @@ class Fraction {
     // Overloaded division operator
     friend Fraction operator/(const Fraction& f1, const Fraction& f2) {
         return Fraction(f1.numerator * f2.denominator, f1.denominator * f2.numerator);
+    }
+
+    friend Fraction operator/= (Fraction& f1, const Fraction& f2) {
+        f1 = f1 / f2;
+        return f1;
     }
 
     // Overloaded multiplication operator
@@ -89,6 +96,11 @@ class Fraction {
     friend Fraction operator-(const Fraction& f1, const Fraction& f2) {
         return Fraction(f1.numerator * f2.denominator - f2.numerator * f1.denominator, 
         f1.denominator * f2.denominator);
+    }
+
+    friend Fraction operator-= (Fraction& f1, const Fraction& f2) {
+        f1 = f1 - f2;
+        return f1;
     }
 
     // Overloaded equals operator
@@ -130,12 +142,21 @@ class Fraction {
         int gcd = getGCD(numerator, denominator);
         numerator /= gcd;
         denominator /= gcd;
+        handleNegatives();
+    }
+
+    // Handles negative signs
+    void handleNegatives() {
+        if (denominator < 0) {
+            numerator *= -1;
+            denominator *= -1;
+        }
     }
 
     // Returns greatest common divisor of two numbers
     int getGCD(int a, int b) {
         int gcd = 1;
-        for (int i = 1; i <= numerator && i <= denominator; i++) {
+        for (int i = 1; i <= abs(numerator) && i <= abs(denominator); i++) {
             if (numerator % i == 0 && denominator % i == 0) {
                 gcd = i;
             }

@@ -9,7 +9,7 @@ int main(void) {
 
     IdentityMatrix im(3);
 
-    m1.load("2 5 3 2 10 6 4 5 0");
+    m1.load("20 50 30 2 10 6 4 5 0");
 
     cout << "m1:" << endl;
     cout << m1 << endl;
