@@ -131,6 +131,7 @@ class Fraction {
     }
 
     
+    private:
     /*
      * ========================
      *     FRACTION HELPERS

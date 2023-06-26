@@ -1,5 +1,12 @@
 #include "Matrix.hpp"
 
+/*
+ *
+ * MATRIX MULTIPLICATION
+ *
+*/
+
+
 Matrix Matrix::operator*(const Matrix &other) const {
 
     if (this->n != other.m) {
@@ -33,6 +40,14 @@ Matrix Matrix::operator*(const int c) const {
 
     return newMatrix;
 }
+
+
+/*
+ *
+ * ROW ECHELON FORMS
+ *
+*/
+
 
 Matrix Matrix::rref() {
     Matrix newMatrix (*this);
@@ -151,10 +166,8 @@ void Matrix::reducer(Matrix& mat, int currentRow, int currentCol, bool rref, boo
         }
 
         // Recursive call for the next row and next column
-        if (rref) {
-            reducer(mat, currentRow + 1, currentCol + 1, rref, verbose);
-        } else {
-            reducer(mat, currentRow + 1, currentCol + 1, rref, verbose);
-        }
+        reducer(mat, currentRow + 1, currentCol + 1, rref, verbose);
     }
 }
+
+
