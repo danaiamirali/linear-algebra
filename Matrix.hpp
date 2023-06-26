@@ -11,6 +11,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <ctime>
 #include "Fraction.hpp"
 
 using std::cout, std::endl;
@@ -106,6 +107,9 @@ class Matrix {
 
         // Fills matrix with random integers from 0 to 9
         Matrix *load() {
+
+            srand(time(0));
+
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
                     matrix[i][j] = Fraction(rand() % 10);
@@ -195,10 +199,12 @@ class Matrix {
         // Matrix reduced row echelon form
         // Returns new matrix
         Matrix rref();
+        Matrix rref(bool verbose);
 
         // Matrix row echelon form
         // Returns new matrix
         Matrix ref();
+        Matrix ref(bool verbose);
 
     private:
         /*
@@ -207,8 +213,8 @@ class Matrix {
          * ========================
         */ 
 
-        // Helper for ref()
-        void refHelper(Matrix &mat, int currentRow, int currentCol);
+        // Helper for rref() and ref()
+        void reducer(Matrix &mat, int currentRow, int currentCol, bool rref, bool verbose);
         
         // Swaps two rows
         void swapRows(int row1, int row2) {
