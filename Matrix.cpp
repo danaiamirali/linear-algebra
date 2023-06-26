@@ -37,7 +37,7 @@ Matrix Matrix::operator*(const int c) const {
 Matrix Matrix::rref() {
     Matrix newMatrix (*this);
 
-    refHelper(newMatrix, 0, 0);
+    reducer(newMatrix, 0, 0, true);
 
     return newMatrix;
 }
@@ -45,18 +45,18 @@ Matrix Matrix::rref() {
 Matrix Matrix::ref() {
     Matrix newMatrix (*this);
 
-    refHelper(newMatrix, 0, 0);
+    reducer(newMatrix, 0, 0, true);
 
     return newMatrix;
 }
 
 // Function to perform row reduction
-void Matrix::refHelper(Matrix& mat, int currentRow, int currentCol) {
+void Matrix::reducer(Matrix& mat, int currentRow, int currentCol, bool rref) {
     int rows = mat.m;
     int cols = mat.n;
 
     // Base case: if we reach the last row or last column, return
-    if (currentRow == rows || currentCol == cols) {
+    if (currentRow == rows || currentCol == cols ) {
         return;
     }
 
@@ -68,23 +68,30 @@ void Matrix::refHelper(Matrix& mat, int currentRow, int currentCol) {
 
     if (nonZeroRow == rows) {
         // If all entries in the current column are zero, move to the next column
-        refHelper(mat, currentRow, currentCol + 1);
+        reducer(mat, currentRow, currentCol + 1, rref);
     } else {
         // Swap the current row with the row containing the non-zero entry
         mat.swapRows(currentRow, nonZeroRow);
 
-        
-        // Scale the current row to make the leading entry 1
-        Fraction scale = mat[currentRow][currentCol];
-        for (int j = currentCol; j < cols; j++) {
-            mat[currentRow][j] /= scale;
-        }
-        
+        if (rref) {
+            // Scale the current row to make the leading entry 1
+            Fraction scale = mat[currentRow][currentCol];
+
+            for (int j = currentCol; j < cols; j++) {
+                try {
+                    mat[currentRow][j] /= scale;
+                }
+                catch (ZERO_DENOMINATOR) {
+                    continue;
+                }
+            }
+        }        
 
         // Perform row operations to make all other entries in the current column zero
         for (int i = 0; i < rows; i++) {
             if (i != currentRow) {
-                Fraction factor = mat[i][currentCol];
+                Fraction factor = mat[i][currentCol] / mat[currentRow][currentCol];
+                
                 for (int j = currentCol; j < cols; j++) {
                     mat[i][j] -= factor * mat[currentRow][j];
                 }
@@ -92,6 +99,10 @@ void Matrix::refHelper(Matrix& mat, int currentRow, int currentCol) {
         }
 
         // Recursive call for the next row and next column
-        refHelper(mat, currentRow + 1, currentCol + 1);
+        if (rref) {
+            reducer(mat, currentRow + 1, currentCol + 1, rref);
+        } else {
+            reducer(mat, currentRow + 1, currentCol, rref);
+        }
     }
 }
