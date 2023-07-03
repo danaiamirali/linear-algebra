@@ -48,7 +48,6 @@ Matrix Matrix::operator*(const int c) const {
  *
 */
 
-
 Matrix Matrix::rref() {
     Matrix newMatrix (*this);
 
@@ -170,4 +169,40 @@ void Matrix::reducer(Matrix& mat, int currentRow, int currentCol, bool rref, boo
     }
 }
 
+/*
+ *
+ * DETERMINANTS
+ *
+*/
 
+// Concatenates two matrices horizontally
+Matrix Matrix::concat(const Matrix& other) const {
+    if (this->matrix == other.matrix) {
+        throw CONCAT_ERROR();
+    }
+
+    Matrix newMatrix = Matrix(this->m, this->n + other.n);
+
+    for (int i = 0; i < newMatrix.m; i++) {
+        for (int j = 0; j < newMatrix.n; j++) {
+            if (j < this->n) {
+                newMatrix.matrix[i][j] = this->matrix[i][j];
+            }
+            else {
+                newMatrix.matrix[i][j] = other.matrix[i][j - this->n];
+            }
+        }
+    }
+}
+
+// Returns a submatrix of the current matrix
+// Inclusive of row_begin and col_begin, inclusive of row_end and col_end
+Matrix Matrix::submatrix(int row_begin, int col_begin, int row_end, int col_end) const {
+    Matrix newMatrix(row_end - row_begin + 1, col_end - col_begin + 1);
+
+    for (int i = row_begin; i++ <= row_end;) {
+        for (int j = col_begin; j++ <= col_end;) {
+            newMatrix.matrix[i - row_begin][j - col_begin] = this->matrix[i][j];
+        }
+    }
+}

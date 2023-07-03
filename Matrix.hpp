@@ -32,6 +32,13 @@ class MULTIPLY_ERROR {
         }
 };
 
+class CONCAT_ERROR {
+    public:
+        CONCAT_ERROR() {
+            cout << "Error: Cannot concatenate matrices" << endl;
+        }
+};
+
 class Matrix {
     /*
     INVARIANTS:
@@ -90,6 +97,15 @@ class Matrix {
 
         ~Matrix() {
             deleteMatrix();
+        }
+
+        Matrix operator=(Matrix &other) {
+            if (other.matrix != matrix) {
+                deleteMatrix();
+                copyAll(other);
+            }
+            
+            return *this;
         }
 
 
@@ -186,6 +202,8 @@ class Matrix {
          * ========================
         */
 
+       Matrix concat(const Matrix &other) const;
+
         // Multiplies two matrices
         // Returns new matrix
         Matrix operator*(const Matrix &other) const;
@@ -219,6 +237,9 @@ class Matrix {
          *     PRIVATE HELPERS
          * ========================
         */ 
+
+
+       Matrix submatrix(int row_begin, int col_begin, int row_end, int col_end) const;
 
         // Helper for rref() and ref()
         void reducer(Matrix &mat, int currentRow, int currentCol, bool rref, bool verbose);
