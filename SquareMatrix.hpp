@@ -3,7 +3,16 @@
 
 #include "Matrix.hpp"
 
+class NOT_INVERTIBLE {
+    public:
+        NOT_INVERTIBLE() {
+            cout << "Error: Matrix is not invertible" << endl;
+        }
+};
+
 class SquareMatrix : public Matrix {
+
+    friend class IdentityMatrix;
 
     public:
 
@@ -32,6 +41,9 @@ class SquareMatrix : public Matrix {
         // Calculates determinant of matrix
         // Intelligently chooses between cofactor expansion and row reduction
         Fraction determinant();
+
+        // Finds inverse of matrix
+        SquareMatrix inverse();
 };
 
 #endif // SQUAREMATRIX_H
