@@ -31,13 +31,7 @@ class SquareMatrix : public Matrix {
 
         // Calculates determinant of matrix
         // Intelligently chooses between cofactor expansion and row reduction
-        int determinant() {
-            /*
-            TO-DO
-            */
-
-           return 0;
-        }
+        Fraction determinant();
 };
 
 #endif // SQUAREMATRIX_H

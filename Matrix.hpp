@@ -206,6 +206,13 @@ class Matrix {
         Matrix ref();
         Matrix ref(bool verbose);
 
+        // Matrix transpose
+        // Returns new matrix
+        Matrix transpose();
+
+        // Matrix determinant
+        Fraction determinant();
+
     private:
         /*
          * ========================
