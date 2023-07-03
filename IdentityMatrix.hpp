@@ -1,6 +1,7 @@
 #ifndef IDENTITYMATRIX_H
 #define IDENTITYMATRIX_H
 
+#include "Matrix.hpp"
 #include "SquareMatrix.hpp"
 
 class IdentityMatrix : public SquareMatrix {
