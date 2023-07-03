@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -Wextra -std=c++11
 
-SRCS = main.cpp Matrix.cpp
+SRCS = main.cpp Matrix.cpp SquareMatrix.cpp
 OBJS = $(SRCS:.cpp=.o)
 EXEC = matrix_program
 
