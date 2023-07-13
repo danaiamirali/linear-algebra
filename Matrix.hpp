@@ -63,14 +63,10 @@ class Matrix {
          * ========================
         */
 
-        // Default constructor
-        // Creates 2x2 matrix
-        Matrix() : m(2), n(2), matrix(new Fraction*[m]) {}
-
-
         // Constructor with specified dimensions
         // Dynamically allocates memory for matrix
         // Throws DIM_ERROR if dimensions are invalid
+        // Initializes all values to 0
         Matrix(int m_in, int n_in):
         m (m_in), n(n_in), matrix(new Fraction*[m]) {
 
@@ -80,13 +76,49 @@ class Matrix {
 
             for (int i = 0; i < m; i++) {
                 matrix[i] = new Fraction[n];
+                for (int j = 0; j < n; j++) {
+                    matrix[i][j] = Fraction(0);
+                }
             }
 
             cout << m << " x " << n << " matrix initialized." << endl;
 
         }
 
-        
+        // Constructor with specified dimensions and values
+        // Dynamically allocates memory for matrix
+        // Throws DIM_ERROR if dimensions are invalid
+        Matrix(int m_in, int n_in, string matrix_in):
+        m (m_in), n(n_in), matrix(new Fraction*[m]) {
+
+            if (m <= 0 || n <= 0 || m > MAX_DIM || n > MAX_DIM) {
+                throw DIM_ERROR();
+            }
+
+            std::vector<int> numbers;
+            std::stringstream ss(matrix_in);
+            std::string token;
+
+            while (ss >> token) {
+                try {
+                    int num = std::stoi(token);
+                    numbers.push_back(num);
+                } catch (const std::exception& e) {
+
+                }
+
+            }
+
+            int numbersCount = numbers.size();
+            for (int i = 0; i < m * n && i < numbersCount; i++) {
+                std::pair<int, int> ind = index(i);
+                matrix[ind.first][ind.second] = numbers[i];
+            }
+
+            cout << m << " x " << n << " matrix initialized." << endl;
+
+        }
+
         // Copy constructor
         // Deep Copy
         Matrix(const Matrix& matrix) 
@@ -115,70 +147,15 @@ class Matrix {
          * ========================
         */
 
-
         std::pair<int, int> getDimensions() const {
             return std::pair<int, int> (m, n);
         }
-
-
-        // Fills matrix with random integers from 0 to 9
-        Matrix *load() {
-
-            srand(time(0));
-
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < n; j++) {
-                    matrix[i][j] = Fraction(rand() % 10);
-                }
-            }
-
-            cout << "Successfully loaded matrix with random integers." << endl;
-
-            return this;
-        }
-
-
-        // Fills matrix with integers from string
-        // Integers must be separated by spaces
-        Matrix *load(std::string nums) {
-            std::vector<int> numbers;
-            std::stringstream ss(nums);
-            std::string token;
-
-            while (ss >> token) {
-                try {
-                    int num = std::stoi(token);
-                    numbers.push_back(num);
-                } catch (const std::exception& e) {
-
-                }
-
-            }
-
-            int numbersCount = numbers.size();
-            for (int i = 0; i < m * n && i < numbersCount; i++) {
-                std::pair<int, int> ind = index(i);
-                matrix[ind.first][ind.second] = numbers[i];
-            }
-
-            cout << "Successfully loaded matrix from string." << endl;
-    
-            return this;
-        }
-
 
         /*
          * ========================
          *         OPERATORS
          * ========================
         */
-
-
-        // Overloaded bracket operator
-        // Returns pointer to row
-        Fraction* operator[](int i) const {
-            return matrix[i];
-        }
         
 
         // Overloaded extraction operator  
@@ -232,6 +209,18 @@ class Matrix {
         Fraction determinant();
 
     private:
+        /*
+         * ========================
+         *     PRIVATE OPERATOR
+         * ========================
+        */
+       // Overloaded bracket operator
+        // Returns pointer to row
+        Fraction* operator[](int i) const {
+            return matrix[i];
+        }
+
+
         /*
          * ========================
          *     PRIVATE HELPERS
