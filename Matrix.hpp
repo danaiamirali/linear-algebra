@@ -226,7 +226,7 @@ class Matrix {
 
         // Matrix transpose
         // Returns new matrix
-        Matrix transpose();
+        Matrix transpose() const;
 
         // Matrix determinant
         Fraction determinant();

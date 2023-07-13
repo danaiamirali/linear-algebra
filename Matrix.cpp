@@ -205,4 +205,19 @@ Matrix Matrix::submatrix(int row_begin, int col_begin, int row_end, int col_end)
             newMatrix.matrix[i - row_begin][j - col_begin] = this->matrix[i][j];
         }
     }
+
+    return newMatrix;
+}
+
+// Returns the transposed of the current matrix
+Matrix Matrix::transpose() const {
+    Matrix newMatrix = Matrix(this->n, this->m);
+
+    for (int i = 0; i < newMatrix.m; i++) {
+        for (int j = 0; j < newMatrix.n; j++) {
+            newMatrix.matrix[i][j] = this->matrix[j][i];
+        }
+    }
+
+    return newMatrix;
 }
