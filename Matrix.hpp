@@ -12,6 +12,7 @@
 #include <sstream>
 #include <string>
 #include <ctime>
+#include <cassert>
 #include "Fraction.hpp"
 
 using std::cout, std::endl;
@@ -101,16 +102,25 @@ class Matrix {
 
             while (ss >> token) {
                 try {
+                    // Convert string to int
+                    // Take into account negative numbers
+                    
                     int num = std::stoi(token);
                     numbers.push_back(num);
+                    
                 } catch (const std::exception& e) {
 
                 }
 
             }
 
+            assert(numbers.size() == m * n);
+
             int numbersCount = numbers.size();
             for (int i = 0; i < m * n && i < numbersCount; i++) {
+                if (i % n == 0) {
+                    matrix[i / n] = new Fraction[n];
+                }
                 std::pair<int, int> ind = index(i);
                 matrix[ind.first][ind.second] = numbers[i];
             }
