@@ -32,7 +32,7 @@ SquareMatrix SquareMatrix::inverse() {
     }
 
     // Extract A^-1 from [I | A^-1]
-    Matrix inv = aug.submatrix(0, this->n + 1, aug.m, aug.n);
+    Matrix inv = aug.submatrix(0, this->n, aug.m, aug.n);
 
     return SquareMatrix(inv);
 }

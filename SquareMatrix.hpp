@@ -35,6 +35,8 @@ class SquareMatrix : public Matrix {
                 throw DIM_ERROR();
             }
 
+            copyAll(mat);
+
         }
 
 
