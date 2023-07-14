@@ -193,15 +193,17 @@ Matrix Matrix::concat(const Matrix& other) const {
             }
         }
     }
+
+    return newMatrix;
 }
 
 // Returns a submatrix of the current matrix
-// Inclusive of row_begin and col_begin, inclusive of row_end and col_end
+// Inclusive of row_begin and col_begin, exclusive of row_end and col_end
 Matrix Matrix::submatrix(int row_begin, int col_begin, int row_end, int col_end) const {
-    Matrix newMatrix(row_end - row_begin + 1, col_end - col_begin + 1);
+    Matrix newMatrix(row_end - row_begin, col_end - col_begin);
 
-    for (int i = row_begin; i++ <= row_end;) {
-        for (int j = col_begin; j++ <= col_end;) {
+    for (int i = row_begin; i < row_end; i++) {
+        for (int j = col_begin; j < col_end; j++) {
             newMatrix.matrix[i - row_begin][j - col_begin] = this->matrix[i][j];
         }
     }
