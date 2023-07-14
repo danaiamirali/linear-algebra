@@ -47,8 +47,6 @@ class Fraction {
 
     // Overloaded extraction operator
     friend std::ostream& operator<<(std::ostream& os, Fraction& f) {
-        f.reduce();
-
         if (f.isWhole() || f.numerator == 0) {
             os << f.numerator;
         } else {
@@ -64,6 +62,7 @@ class Fraction {
 
     friend Fraction operator/= (Fraction& f1, const Fraction& f2) {
         f1 = f1 / f2;
+        f1.reduce();
         return f1;
     }
 
@@ -84,11 +83,13 @@ class Fraction {
 
     friend Fraction operator+=(Fraction& f1, const Fraction& f2) {
         f1 = f1 + f2;
+        f1.reduce();
         return f1;
     }
 
     friend Fraction operator+=(Fraction& f1, int i) {
         f1 = f1 + i;
+        f1.reduce();
         return f1;
     }
 
@@ -100,6 +101,7 @@ class Fraction {
 
     friend Fraction operator-= (Fraction& f1, const Fraction& f2) {
         f1 = f1 - f2;
+        f1.reduce();
         return f1;
     }
 
@@ -109,7 +111,7 @@ class Fraction {
     }
 
     friend bool operator==(const Fraction& f1, int i) {
-        return f1 == Fraction(i);
+        return f1.numerator == i && f1.denominator == 1;
     }
 
     // Overloaded not equals operator
@@ -140,6 +142,10 @@ class Fraction {
 
     // Reduces fraction to lowest terms
     void reduce() {
+        if (numerator == 0) {
+            denominator = 1;
+            return;
+        }
         int gcd = getGCD(numerator, denominator);
         numerator /= gcd;
         denominator /= gcd;
